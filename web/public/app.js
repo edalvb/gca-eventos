@@ -7,7 +7,8 @@
     const app = new Vue({
         el: '#app',
         data: {
-            authorized: null
+            authorized: null,
+            eventos: null
         },
         created() {
             // Operaciones que se ejecutan al inicio
@@ -34,6 +35,7 @@
 
                 } else if (user.uid === 'aI2nIe6I8Ngt9K875WYmTFt274A2') {
                     self.authorized = true;
+                    self.init();
                 } else {
                     firebase.auth().signOut();
                 }
@@ -41,6 +43,22 @@
         },
         methods: {
             // funciones que controlan el flujo de la app
+            init() {
+                this.fechEventos();
+            },
+            fechEventos() {
+                var self = this;
+                db.collection('eventos').onSnapshot(snaptshot => {
+                    var eventos = {};
+                    snaptshot.forEach(doc => {
+                        var evento = doc.data();
+                        evento.fecha = evento.fecha.toDate();
+                        eventos[doc.id] = evento;
+                    });
+                    self.eventos = eventos;
+                    console.log(eventos);
+                });
+            }
         }
     });
 

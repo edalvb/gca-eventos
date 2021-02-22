@@ -36,8 +36,28 @@
 
     <div class="container">
       <h1 class="text-center">Listado de Eventos</h1>
+
+      <table class="table table-hover" aria-describedby="Datos de Eventos" v-if="eventos">
+        <thead>
+          <tr>
+            <th scope="col">id</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Titulo</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(evento, id) in eventos">
+            <th scope="row">{{id}}</th>
+            <td>{{evento.fecha.toLocaleDateString()}}</td>
+            <td>{{evento.titulo}}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
     </div>
-    
+
   </div>
 
   <div id="firebaseui-auth-container" v-if='!authorized'></div>
