@@ -8,11 +8,39 @@
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
   <link rel="stylesheet" href="app.css">
 
 </head>
 
 <body>
+
+  <div id="app" v-if='authorized' v-cloak>
+
+    <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
+      <a href="#" class="navbar-brand mx-auto">ADMIN</a>
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu">
+        <span class="navbar-toggle-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a href="#eventos" class="nav-link">EVENTOS</a>
+          </li>
+        </ul>
+      </div>
+
+    </nav>
+
+    <div class="container">
+      <h1 class="text-center">Listado de Eventos</h1>
+    </div>
+    
+  </div>
+
+  <div id="firebaseui-auth-container" v-if='!authorized'></div>
 
   <!-- update the version number as needed -->
   <script defer src="/__/firebase/8.2.7/firebase-app.js"></script>
@@ -42,13 +70,18 @@
   <!-- Initialize Firebase -->
   <script defer src="/__/firebase/init.js"></script>
 
+
+  <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
+
+
   <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
     crossorigin="anonymous"></script>
 
-  <script defer src="https://unpkg.com/vue@next"></script>
+  <!-- <script defer src="https://unpkg.com/vue@next"></script> -->
+  <script defer src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
-  <script defer src="app.js"></script>
+  <script defer type="module" src="app.js"></script>
 </body>
 
 </html>

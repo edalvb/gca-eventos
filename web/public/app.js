@@ -2,59 +2,46 @@
 
     var db = firebase.firestore();
 
-    // Obtener una colección completa
-    db.collection('eventos')
-        .get()
-        .then(
-            querySnapshot => {
-                querySnapshot.forEach(doc => {
-                    console.log(doc.data());
-                    console.log(doc.id);
-                })
-            }
-        );
+    var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
-    // Obtener una subcolección
-    db.collection('eventos/fy86WsWnnD4XMlL2iW4M/confirmaciones')
-        .get()
-        .then(
-            querySnapshot => {
-                querySnapshot.forEach(doc => {
-                    console.log(doc.data());
-                    console.log(doc.id);
-                })
-            }
-        );
+    const app = new Vue({
+        el: '#app',
+        data: {
+            authorized: null
+        },
+        created() {
+            // Operaciones que se ejecutan al inicio
+            var self = this;
+            firebase.auth().onAuthStateChanged(user => {
+                if (!user) {
+                    // Configuramos firebaseUI
+                    var uiConfig = {
+                        signInFlow: 'popup',
+                        // signInSuccessUrl: '/',
+                        callbacks: {
+                            signInSuccessWithAuthResult: (authResult, redirectUrl) => {
+                                return false;
+                            }
+                        },
+                        signInOptions: [
+                            firebase.auth.EmailAuthProvider.PROVIDER_ID
+                        ],
+                        CredentialHelper: firebaseui.auth.CredentialHelper.NONE
+                    }
 
-    // Obtener una subcolección
-    db.collection('eventos').doc('fy86WsWnnD4XMlL2iW4M')
-        .get()
-        .then(querySnapshot => {
-            console.log(querySnapshot.data());
-            console.log(querySnapshot.id);
-        });
+                    // The start method will wait until the DOM is loaded.
+                    ui.start('#firebaseui-auth-container', uiConfig);
 
-    // Obtener un documento mediante una query
-    db.collection('eventos/fy86WsWnnD4XMlL2iW4M/confirmaciones')
-        .where('asistentes', '==', 'Familia de Aguilera')
-        .get()
-        .then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-                console.log(doc.data());
-                console.log(doc.id);
+                } else if (user.uid === 'aI2nIe6I8Ngt9K875WYmTFt274A2') {
+                    self.authorized = true;
+                } else {
+                    firebase.auth().signOut();
+                }
             })
-        });
-
-    // Obtener actualizaciones en tiempo real
-    db.collection('eventos/fy86WsWnnD4XMlL2iW4M/confirmaciones')
-        .onSnapshot(
-            snapshot => {
-                snapshot.forEach(doc => {
-                    console.log('Actualización en tiempo real');
-                    console.log(doc.data());
-                    console.log(doc.id);
-                })
-            }
-        );
+        },
+        methods: {
+            // funciones que controlan el flujo de la app
+        }
+    });
 
 })();
