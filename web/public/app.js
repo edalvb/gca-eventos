@@ -4,11 +4,18 @@
 
     var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
-    const app = new Vue({
+    new Vue({
         el: '#app',
         data: {
             authorized: null,
-            eventos: null
+            eventos: null,
+            currentEvent: {
+                titulo: "",
+                descripcion: "",
+                fecha: "",
+            },
+            currentEventErrors: { dirty: false },
+            modal: null
         },
         created() {
             // Operaciones que se ejecutan al inicio
@@ -39,7 +46,7 @@
                 } else {
                     firebase.auth().signOut();
                 }
-            })
+            });
         },
         methods: {
             // funciones que controlan el flujo de la app
@@ -58,6 +65,55 @@
                     self.eventos = eventos;
                     console.log(eventos);
                 });
+            },
+            guardarEvento() {
+                if (this.isValidEvent()) {
+                    const milli = Math.floor(moment(this.currentEvent.fecha).valueOf() / 1000);
+                    this.currentEvent.fecha = new firebase.firestore.Timestamp(milli, 0);
+                    db.collection('eventos')
+                        .add(this.currentEvent)
+                        .then(docRef => {
+                            this.resetEventoForm();
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        })
+                }
+            },
+            isValidEvent() {
+                var isValid = true;
+                this.currentEventErrors = { dirty: true };
+                if (this.currentEvent.titulo.trim().length == 0) {
+                    this.currentEventErrors.titulo = 'Indica un título';
+                    isValid = false;
+                }
+
+                if (this.currentEvent.descripcion.trim().length == 0) {
+                    this.currentEventErrors.descripcion = 'Indica una descripción';
+                    isValid = false;
+                }
+
+                if (isNaN(Date.parse(this.currentEvent.fecha))) {
+                    this.currentEventErrors.fecha = 'Indica una fecha';
+                    isValid = false;
+                } else if (Date.parse(this.currentEvent.fecha) - Date.parse(new Date) < 0) {
+                    this.currentEventErrors.fecha = 'Indica una fecha en el futuro';
+                    isValid = false;
+                }
+
+                return isValid;
+
+            },
+            resetEventoForm() {
+                this.modal = new bootstrap.Modal(document.getElementById('eventoFormModal'));
+                this.modal.hide();
+
+                this.currentEventErrors = { dirty: false };
+                this.currentEvent = {
+                    titulo: "",
+                    descripcion: "",
+                    fecha: "",
+                }
             }
         }
     });

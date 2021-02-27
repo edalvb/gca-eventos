@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
   <meta charset="utf-8">
@@ -15,52 +15,117 @@
 
 <body>
 
-  <div id="app" v-if='authorized' v-cloak>
+  <div id="app" v-cloak>
 
-    <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
-      <a href="#" class="navbar-brand mx-auto">ADMIN</a>
+    <div v-if='authorized'>
 
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu">
-        <span class="navbar-toggle-icon"></span>
-      </button>
+      <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
+        <a href="#" class="navbar-brand mx-auto">ADMIN</a>
 
-      <div class="collapse navbar-collapse" id="menu">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a href="#eventos" class="nav-link">EVENTOS</a>
-          </li>
-        </ul>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu">
+          <span class="navbar-toggle-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menu">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a href="#eventos" class="nav-link">EVENTOS</a>
+            </li>
+          </ul>
+        </div>
+
+      </nav>
+
+      <div class="container">
+        <h1 class="text-center">Listado de Eventos</h1>
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary m-2 float-end" data-bs-toggle="modal"
+          data-bs-target="#eventoFormModal">
+          Añadir Evento
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="eventoFormModal">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Crear/Actualizar Evento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </button>
+              </div>
+
+              <div class="modal-body">
+
+                <form id="eventoForm">
+                  <div class="form-group">
+                    <label for="eventoTitle">Título</label>
+                    <input v-model="currentEvent.titulo"
+                      v-bind:class="{'is-invalid' : currentEventErrors.dirty && currentEventErrors.titulo, 'is-valid' : currentEventErrors.dirty && !currentEventErrors.titulo}"
+                      type="text" class="form-control" id="eventoTitle" placeholder="Título del evento">
+                    <div class="invalid-feedback">{{currentEventErrors.titulo || ""}}</div>
+                    <div class="valid-feedback">Ok</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="eventoDescripcion">Descripción</label>
+                    <textarea v-model="currentEvent.descripcion"
+                      v-bind:class="{'is-invalid' : currentEventErrors.dirty && currentEventErrors.descripcion, 'is-valid' : currentEventErrors.dirty && !currentEventErrors.descripcion}"
+                      id="eventoDescripcion" class="form-control" placeholder="Descripcion del evento"></textarea>
+                    <div class="invalid-feedback">{{currentEventErrors.descripcion || ""}}</div>
+                    <div class="valid-feedback">Ok</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="eventoFecha">Fecha</label>
+                    <input v-model="currentEvent.fecha"
+                      v-bind:class="{'is-invalid' : currentEventErrors.dirty && currentEventErrors.fecha, 'is-valid' : currentEventErrors.dirty && !currentEventErrors.fecha}"
+                      type="date" class="form-control" id="eventoFecha" placeholder="Fecha del evento">
+                    <div class="invalid-feedback">{{currentEventErrors.fecha || ""}}</div>
+                    <div class="valid-feedback">Ok</div>
+                  </div>
+
+                </form>
+
+              </div>
+
+              <div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                  <button type="button" class="btn btn-success" v-on:click="guardarEvento()">Guardar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <table class="table table-hover" aria-describedby="Datos de Eventos" v-if="eventos">
+          <thead>
+            <tr>
+              <th scope="col">id</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Titulo</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(evento, id) in eventos">
+              <th scope="row">{{id}}</th>
+              <td>{{evento.fecha.toLocaleDateString()}}</td>
+              <td>{{evento.titulo}}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+
       </div>
-
-    </nav>
-
-    <div class="container">
-      <h1 class="text-center">Listado de Eventos</h1>
-
-      <table class="table table-hover" aria-describedby="Datos de Eventos" v-if="eventos">
-        <thead>
-          <tr>
-            <th scope="col">id</th>
-            <th scope="col">Fecha</th>
-            <th scope="col">Titulo</th>
-            <th scope="col">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(evento, id) in eventos">
-            <th scope="row">{{id}}</th>
-            <td>{{evento.fecha.toLocaleDateString()}}</td>
-            <td>{{evento.titulo}}</td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
 
     </div>
 
+    <div id="firebaseui-auth-container" v-if='!authorized'></div>
+
   </div>
 
-  <div id="firebaseui-auth-container" v-if='!authorized'></div>
 
   <!-- update the version number as needed -->
   <script defer src="/__/firebase/8.2.7/firebase-app.js"></script>
@@ -100,6 +165,10 @@
 
   <!-- <script defer src="https://unpkg.com/vue@next"></script> -->
   <script defer src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+    integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+    crossorigin="anonymous"></script>
 
   <script defer type="module" src="app.js"></script>
 </body>
