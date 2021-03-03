@@ -14,6 +14,7 @@
                 descripcion: "",
                 fecha: "",
                 archivado: false,
+                organizador: ""
             },
             currentEventErrors: { dirty: false },
             modal: null,
@@ -116,8 +117,20 @@
                     isValid = false;
                 }
 
+                if (this.currentEvent.organizador.trim().length == 0) {
+                    this.currentEventErrors.organizador = 'Indica un organizador';
+                    isValid = false;
+                } else if (!this.validEmail(this.currentEvent.organizador)) {
+                    this.currentEventErrors.organizador = 'Indica un email válido';
+                    isValid = false;
+                }
+
                 return isValid;
 
+            },
+            validEmail: function (email) {
+                const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(String(email).toLowerCase());
             },
             resetEventoForm: function () {
                 this.modal.hide();

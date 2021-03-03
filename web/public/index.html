@@ -89,6 +89,15 @@
                     <div class="valid-feedback">Ok</div>
                   </div>
 
+                  <div class="form-group">
+                    <label for="eventoOrganizador">Organizador</label>
+                    <input v-model="currentEvent.organizador"
+                      v-bind:class="{'is-invalid' : currentEventErrors.dirty && currentEventErrors.organizador, 'is-valid' : currentEventErrors.dirty && !currentEventErrors.organizador}"
+                      type="email" class="form-control" id="eventoOrganizador" placeholder="Organizador del evento">
+                    <div class="invalid-feedback">{{currentEventErrors.organizador || ""}}</div>
+                    <div class="valid-feedback">Ok</div>
+                  </div>
+
                 </form>
 
               </div>
@@ -110,6 +119,7 @@
               <th scope="col">id</th>
               <th scope="col">Fecha</th>
               <th scope="col">Titulo</th>
+              <th scope="col">Organizador</th>
               <th scope="col">Acciones</th>
             </tr>
           </thead>
@@ -118,17 +128,18 @@
               <th scope="row">{{id}}</th>
               <td>{{evento.fecha.toLocaleDateString()}}</td>
               <td>{{evento.titulo}}</td>
+              <td>{{evento.organizador}}</td>
               <td>
                 <button class="btn btn-outline-info btn-sm" v-on:click="editarEvento(evento, id)">
                   <em class="material-icons">edit</em>
 
-                <button class="btn btn-outline-warning btn-sm" v-on:click="archivarEvento(id)">
-                  <em class="material-icons">archive</em>
-                </button>
+                  <button class="btn btn-outline-warning btn-sm" v-on:click="archivarEvento(id)">
+                    <em class="material-icons">archive</em>
+                  </button>
 
-                <button class="btn btn-outline-danger btn-sm" v-on:click="borrarEvento(id)">
-                  <em class="material-icons">delete_forever</em>
-                </button>
+                  <button class="btn btn-outline-danger btn-sm" v-on:click="borrarEvento(id)">
+                    <em class="material-icons">delete_forever</em>
+                  </button>
               </td>
             </tr>
           </tbody>
