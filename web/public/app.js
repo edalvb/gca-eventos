@@ -15,9 +15,10 @@
                 fecha: "",
             },
             currentEventErrors: { dirty: false },
-            modal: null
+            modal: null,
+            currentEventId: null,
         },
-        created() {
+        created: function () {
             // Operaciones que se ejecutan al inicio
             var self = this;
             firebase.auth().onAuthStateChanged(user => {
@@ -50,11 +51,10 @@
         },
         methods: {
             // funciones que controlan el flujo de la app
-            init() {
+            init: function () {
                 this.fechEventos();
             },
-            fechEventos() {
-                var self = this;
+            fechEventos: function () {
                 db.collection('eventos').onSnapshot(snaptshot => {
                     var eventos = {};
                     snaptshot.forEach(doc => {
@@ -62,25 +62,36 @@
                         evento.fecha = evento.fecha.toDate();
                         eventos[doc.id] = evento;
                     });
-                    self.eventos = eventos;
-                    console.log(eventos);
+                    this.eventos = eventos;
+
+                    // Vinculamos el modal a la variable modal
+                    this.modal = new bootstrap.Modal(document.getElementById('eventoFormModal'));
                 });
             },
-            guardarEvento() {
+            guardarEvento: function () {
                 if (this.isValidEvent()) {
                     const milli = Math.floor(moment(this.currentEvent.fecha).valueOf() / 1000);
                     this.currentEvent.fecha = new firebase.firestore.Timestamp(milli, 0);
-                    db.collection('eventos')
-                        .add(this.currentEvent)
-                        .then(docRef => {
-                            this.resetEventoForm();
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        })
+                    if (!this.currentEventId) {
+                        db.collection('eventos')
+                            .add(this.currentEvent)
+                            .then(docRef => {
+                                this.resetEventoForm();
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            })
+                    } else {
+                        console.log(this.currentEventId);
+                        db.collection('eventos')
+                            .doc(this.currentEventId)
+                            .update(this.currentEvent)
+                            .then(docRef => { this.resetEventoForm(); })
+                            .catch(error => { console.log(error) })
+                    }
                 }
             },
-            isValidEvent() {
+            isValidEvent: function () {
                 var isValid = true;
                 this.currentEventErrors = { dirty: true };
                 if (this.currentEvent.titulo.trim().length == 0) {
@@ -104,8 +115,7 @@
                 return isValid;
 
             },
-            resetEventoForm() {
-                this.modal = new bootstrap.Modal(document.getElementById('eventoFormModal'));
+            resetEventoForm: function () {
                 this.modal.hide();
 
                 this.currentEventErrors = { dirty: false };
@@ -114,6 +124,30 @@
                     descripcion: "",
                     fecha: "",
                 }
+            },
+            /**
+             * Convierte de Date a un tipo de dato Timestamp que Firebase pueda entender y lo retorna.
+             * @param {Date} fecha 
+             */
+            convierteFecha: function (fecha) {
+                return new firebase.firestore.Timestamp(Math.floor(moment(fecha).valueOf() / 1000), 0);
+            },
+            editarEvento: function (evento, id) {
+                Object.assign(this.currentEvent, evento);
+
+                // Si se hace de esta manera vue no sería notificado que el objeto data ha sufrido cambios
+                // this.currentEvent = evento;
+
+                // const newFecha = new Date(this.currentEvent.fecha).toString.split('T')[0];
+
+                // console.log(newFecha);
+
+                this.currentEvent.fecha = this.convierteFecha(this.currentEvent.fecha);
+
+                this.currentEventId = id;
+
+                this.modal.show();
+
             }
         }
     });
