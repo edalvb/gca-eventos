@@ -18,7 +18,7 @@
             },
             currentEventErrors: { dirty: false },
             modal: null,
-            currentEventId: null,
+            currentImage: null,
         },
         created: function () {
             // Operaciones que se ejecutan al inicio
@@ -166,6 +166,33 @@
                 db.collection('eventos')
                     .doc(id)
                     .update({ archivado: true });
+            },
+            loadImage: function (id) {
+                document.getElementById(`inputImage-${id}`).click();
+            },
+            uploadImage: function (event, id) {
+                console.log(event.target);
+                if (event.target.files.length) {
+                    var file = event.target.files[0];
+                    var fileExt = file.name.split('.').pop();
+                    var storageRef = firebase.storage().ref();
+                    var imageRef = storageRef.child(`eventos/${id}/imagen_destacada-${fileExt}`);
+                    imageRef.put(file).then(function (snapshot) {
+                        if (snapshot && snapshot.state != "success") {
+                            alert("No se pudo subir");
+                        } else {
+                            snapshot.ref.getDownloadURL()
+                                .then(downloadURL => {
+                                    db.collection('eventos')
+                                        .doc(id)
+                                        .update({ imagenDestacada: downloadURL });
+                                });
+                        }
+                    })
+                }
+            },
+            setCurrentImage(evento) {
+                this.currentImage = evento.imagenDestacada;
             }
         }
     });

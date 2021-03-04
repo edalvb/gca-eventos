@@ -56,7 +56,6 @@
               <div class="modal-header">
                 <h5 class="modal-title">Crear/Actualizar Evento</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </button>
               </div>
 
               <div class="modal-body">
@@ -119,6 +118,7 @@
               <th scope="col">id</th>
               <th scope="col">Fecha</th>
               <th scope="col">Titulo</th>
+              <th scope="col">Imagen</th>
               <th scope="col">Organizador</th>
               <th scope="col">Acciones</th>
             </tr>
@@ -128,18 +128,30 @@
               <th scope="row">{{id}}</th>
               <td>{{evento.fecha.toLocaleDateString()}}</td>
               <td>{{evento.titulo}}</td>
+              <td>
+                <em class="material-icons" v-if="evento.imagenDestacada" v-on:click="setCurrentImage(evento)"
+                  data-bs-toggle="modal" data-bs-target="#imageModal"
+                  style="cursor: pointer;">visibility</em>
+              </td>
               <td>{{evento.organizador}}</td>
               <td>
+                <button class="btn btn-outline-primary btn-sm" v-on:click="loadImage(id)">
+                  <em class="material-icons">photo</em>
+                </button>
+                <input v-bind:id="'inputImage-' + id" v-on:change="uploadImage($event, id)" type="file" name="imagen"
+                  accept="image/*" style="display:none">
+
                 <button class="btn btn-outline-info btn-sm" v-on:click="editarEvento(evento, id)">
                   <em class="material-icons">edit</em>
+                </button>
 
-                  <button class="btn btn-outline-warning btn-sm" v-on:click="archivarEvento(id)">
-                    <em class="material-icons">archive</em>
-                  </button>
+                <button class="btn btn-outline-warning btn-sm" v-on:click="archivarEvento(id)">
+                  <em class="material-icons">archive</em>
+                </button>
 
-                  <button class="btn btn-outline-danger btn-sm" v-on:click="borrarEvento(id)">
-                    <em class="material-icons">delete_forever</em>
-                  </button>
+                <button class="btn btn-outline-danger btn-sm" v-on:click="borrarEvento(id)">
+                  <em class="material-icons">delete_forever</em>
+                </button>
               </td>
             </tr>
           </tbody>
@@ -150,6 +162,20 @@
     </div>
 
     <div id="firebaseui-auth-container" v-if='!authorized'></div>
+
+    <div class="modal fade" id="imageModal">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="model-content">
+          <div class="modal-header">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body">
+            <img alt="Imagen destacada" class="img-fluid" v-if="currentImage" v-bind:src="currentImage">
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 
