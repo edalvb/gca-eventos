@@ -193,6 +193,9 @@
             },
             setCurrentImage(evento) {
                 this.currentImage = evento.imagenDestacada;
+            },
+            logout: function () {
+                firebase.auth().signOut();
             }
         }
     });

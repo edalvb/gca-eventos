@@ -36,6 +36,11 @@
               <a href="#eventos" class="nav-link">EVENTOS</a>
             </li>
           </ul>
+          <ul class="navbar-nav navbar-right">
+            <li class="nav-item">
+              <a href="" class="nav-link" v-on:click="logout()">Logout</a>
+            </li>
+          </ul>
         </div>
 
       </nav>
@@ -130,8 +135,7 @@
               <td>{{evento.titulo}}</td>
               <td>
                 <em class="material-icons" v-if="evento.imagenDestacada" v-on:click="setCurrentImage(evento)"
-                  data-bs-toggle="modal" data-bs-target="#imageModal"
-                  style="cursor: pointer;">visibility</em>
+                  data-bs-toggle="modal" data-bs-target="#imageModal" style="cursor: pointer;">visibility</em>
               </td>
               <td>{{evento.organizador}}</td>
               <td>

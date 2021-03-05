@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="organizador.css">
+
+</head>
+
+<body>
+
+    <div id="app" v-cloak>
+
+        <div v-if="!authorized">
+            <div class="col-6 offset-3 mt-5">
+                <div class="jumbotron">
+                    <h1 class="display-4">Login</h1>
+                    <div v-if="!emailSend">
+                        <p class="lead">Si es la primera vez que entras, introduce tu email y pulsa para recibir un
+                            enlace para modificar</p>
+                        <div class="form-group">
+                            <input type="email" v-model="userEmail"
+                                v-bind:class="{'is-invalid' : userEmailError.dirty && userEmailError.email , 'is-valid' : userEmailError.dirty && !userEmailError.email}"
+                                class="form-control" id="userEmail" placeholder="Introduce tu email">
+                            <div class="invalid-feedback">{{userEmailError.email || ""}}</div>
+                            <div class="valid-feedback">OK</div>
+                        </div>
+                        <button v-on:click="sendResetPassword()"
+                            class="btn btn-outline-secondary btn-lg btn-block">Enviar email para reseterar</button>
+                        <hr>
+                        <p class="lead">De lo contrario pulsa para entrar</p>
+                    </div>
+                    <div v-if="emailSend">Email enviado.</div>
+                </div>
+
+                <button v-on:click="login()" class="btn btn-outline-primary btn-lg btn-block">Entrar</button>
+
+                <div class="mt-5" id="firebaseui-auth-container"></div>
+            </div>
+        </div>
+
+        <div v-if="authorized && evento">
+            <div class="container">
+                <div class="col-10 offset-1 mt-5">
+                    <div class="jumbotron">
+                        <img v-bind:src="evento.imagenDestacada" v-if="evento.imagenDestacada" alt="imagen destacada"
+                            class="img-fluid img-thumbnail mx-auto">
+                        <h1 class="display-4">{{evento.titulo}}</h1>
+                        <p class="lead">{{evento.descripcion}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/8.2.7/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.2.7/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.2.7/firebase-database.js"></script>
+    <script defer src="/__/firebase/8.2.7/firebase-firestore.js"></script>
+    <script defer src="/__/firebase/8.2.7/firebase-functions.js"></script>
+    <script defer src="/__/firebase/8.2.7/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/8.2.7/firebase-storage.js"></script>
+    <script defer src="/__/firebase/8.2.7/firebase-analytics.js"></script>
+    <script defer src="/__/firebase/8.2.7/firebase-remote-config.js"></script>
+    <script defer src="/__/firebase/8.2.7/firebase-performance.js"></script>
+
+    <script defer src="/__/firebase/init.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+        crossorigin="anonymous"></script>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+        integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+        crossorigin="anonymous"></script>
+
+    <script defer type="module" src="organizador.js"></script>
+</body>
+
+</html>
