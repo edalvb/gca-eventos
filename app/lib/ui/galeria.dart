@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:app/models/evento.dart';
 
-class Galeria extends StatelessWidget {
+class GaleriaPage extends StatelessWidget {
+  final Evento evento;
+
+  GaleriaPage({this.evento});
+
   @override
   Widget build(BuildContext context) {
     return Center(
