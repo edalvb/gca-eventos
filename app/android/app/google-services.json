@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "176869904337",
+    "firebase_url": "https://gca-eventos-default-rtdb.firebaseio.com",
+    "project_id": "gca-eventos",
+    "storage_bucket": "gca-eventos.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176869904337:android:95659a068571d83ccbdaf0",
+        "android_client_info": {
+          "package_name": "com.edalvb.gcoding.appeventos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "176869904337-9v9c7jmasv7qqmsopvb3g7gjbgn4fjv8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.edalvb.gcoding.appeventos",
+            "certificate_hash": "e359f5ab61a926c547cd09be953e1b43dda1ef6f"
+          }
+        },
+        {
+          "client_id": "176869904337-6ejrrlk8eip11m9c9c88aq0gb4hsqdgk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJxZtNREnao10ew4SHhxjIISc4hacZ2Ds"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "176869904337-6ejrrlk8eip11m9c9c88aq0gb4hsqdgk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
