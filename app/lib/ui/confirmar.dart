@@ -1,5 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:app/models/evento.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfirmarPage extends StatefulWidget {
   final Evento evento;
@@ -15,6 +21,20 @@ class _ConfirmarPageState extends State<ConfirmarPage> {
   int adultos;
   int menores;
   String asistentes;
+  String asistenciaID;
+
+  @override
+  void initState() {
+    super.initState();
+    getAsistenciaID();
+  }
+
+  getAsistenciaID() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    asistenciaID = await pref.getString('asistenciaID');
+  }
+
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +79,7 @@ class _ConfirmarPageState extends State<ConfirmarPage> {
                 "Nombres de Asistentes",
                 4,
                 checkAsistentes,
-                    (value) => {this.asistentes = value},
+                (value) => {this.asistentes = value},
               ),
               OutlinedButton(
                 child: Text("Enviar confirmación"),
@@ -133,9 +153,36 @@ class _ConfirmarPageState extends State<ConfirmarPage> {
   enviarConfirmacion() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      print("Adultos: ${this.adultos}");
-      print("Menores: ${this.menores}");
-      print("Asistentes: ${this.asistentes}");
+
+      Map<String, dynamic> data = {
+        "adultos": adultos,
+        "menores": menores,
+        "asistentes": asistentes,
+      };
+
+      CollectionReference asistentesRef =
+          firestore.collection("eventos/${widget.evento.id}/asistentes");
+
+      String msg;
+
+      if (asistenciaID == null) {
+        asistentesRef.add(data).then(guardarAsisteciaID);
+        msg = "Asistentes creados";
+      } else {
+        asistentesRef.doc(asistenciaID).set(data);
+        msg = "Asistentes actualizados";
+      }
+
+      if (msg != null) {
+        final snackBar = SnackBar(content: Text(msg));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
+  }
+
+  FutureOr guardarAsisteciaID(DocumentReference docRef) async {
+    asistenciaID = docRef.id;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString("asistenciaID", asistenciaID);
   }
 }
