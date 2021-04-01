@@ -31,8 +31,8 @@ class _HomeState extends State<Home> {
                 _evento = Evento.fromDocumentSnapshot(ds);
                 _widgetOptions = [
                   EventoPage(evento: _evento),
-                  GaleriaPage(evento: _evento),
                   ConfirmarPage(evento: _evento),
+                  GaleriaPage(evento: _evento),
                 ];
               })
             }
