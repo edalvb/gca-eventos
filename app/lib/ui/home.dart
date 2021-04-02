@@ -4,6 +4,7 @@ import 'package:app/ui/galeria.dart';
 import 'package:app/models/evento.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -64,7 +65,7 @@ class _HomeState extends State<Home> {
           onTap: _onItemTapped,
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: null,
+          onPressed: getImage,
           child: Icon(Icons.camera_alt),
         ),
       ),
@@ -75,5 +76,12 @@ class _HomeState extends State<Home> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  Future getImage() async {
+    final ImagePicker _picker = ImagePicker();
+    // var image = await ImagePicker.pickImage(surce: ImageSource.camera);
+    final pickedFile = await _picker.getImage(source: ImageSource.camera);
+    print(pickedFile);
   }
 }
