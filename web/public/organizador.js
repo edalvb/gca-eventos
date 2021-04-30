@@ -13,6 +13,8 @@
             emailSend: false,
             evento: null,
             eventoID: null,
+            asistentes: null,
+            galeria: null,
         },
         created: function () {
             firebase.auth().onAuthStateChanged(user => {
@@ -60,6 +62,32 @@
                             data.fecha = data.fecha.toDate();
                             this.evento = data;
                             this.eventoID = doc.id;
+                            this.fetchAsistentes();
+                            this.fetchGaleria();
+                        }
+                    });
+            },
+            fetchAsistentes: function () {
+                db.collection(`eventos/${this.eventoID}/asistentes`)
+                    .onSnapshot(querySnapshot => {
+                        if (!querySnapshot.empty) {
+                            var asistentes = [];
+                            querySnapshot.forEach(doc => {
+                                asistentes.push(doc.data());
+                            });
+                            this.asistentes = asistentes;
+                        }
+                    });
+            },
+            fetchGaleria: function () {
+                db.collection(`eventos/${this.eventoID}/gallery`)
+                    .onSnapshot(querySnapshot => {
+                        if (!querySnapshot.empty) {
+                            var galeria = [];
+                            querySnapshot.forEach(doc => {
+                                galeria.push(doc.data().url);
+                            });
+                            this.galeria = galeria;
                         }
                     });
             }
